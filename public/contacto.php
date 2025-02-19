@@ -23,10 +23,23 @@
         if(empty($errores)){
             $query =  "INSERT INTO contacto (nombre, email, mensaje, estado) values ('$nombre','$email','$mensaje', 'activo')";
             $resultado = mysqli_query($db, $query);
+
+            // Bind de valores
+
+            $stmt->bindParam(':nombre', $nombre, PDO::PARAM_STR);
+            $stmt->bindparam(':email', $email, PDO::PARAM_STR);
+            $stmt->bindParam(':mensaje', $mensaje, PDO::PARAM_STR);
+
+            //Ejecutar la consulta
+
+            if($stmt->execute()){
  
                // Redirigir usando PRG para evitar reenvíos
          header("Location: " . $_SERVER['PHP_SELF'] . "#contact");
                 exit; 
+            } else{
+                echo "error al guardar el memsaje.";
+            }
         }
 
    
