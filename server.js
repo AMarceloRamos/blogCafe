@@ -69,4 +69,5 @@ app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
 
-console.log(articulos); // Verifica qué campos devuelve la API
+// Verifica qué campos devuelve la API
+// console.log(articulos); 
