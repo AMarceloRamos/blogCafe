@@ -32,7 +32,7 @@ if (empty($errores)) {
 
         if ($resultado) {
             // Redirigir usando PRG para evitar reenvíos
-            header("Location: " . $_SERVER['PHP_SELF'] . "#contact?success=1");
+            header("Location:".$_SERVER['PHP_SELF']."#contact?success=1");
             exit;
         } else {
             echo "Error al guardar el mensaje.";
