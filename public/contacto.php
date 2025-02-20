@@ -3,6 +3,8 @@
 // session_start();
 require '../include/database.php';
 
+$db = conectarDB();
+
 $nombre = '';
 $email = '';
 $mensaje = '';
