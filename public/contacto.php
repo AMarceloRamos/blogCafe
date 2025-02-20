@@ -40,7 +40,7 @@ $stmt->execute();
          //        exit; 
          //    } else{
          //        echo "error al guardar el memsaje.";
-         //    }
+            }
     }
 ?>
 <!DOCTYPE html>
