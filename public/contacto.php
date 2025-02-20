@@ -29,18 +29,12 @@ $stmt->bindParam(':mensaje', $mensaje);
 // Ejecutar la consulta
 $stmt->execute();
  
-               // Redirigir usando PRG para evitar reenvíos
-         header("Location: " . $_SERVER['PHP_SELF'] . "#contact");
-                exit; 
-            } else{
-                echo "error al guardar el memsaje.";
-            }
-        }
-
-   
-
-
-    }
+         //       // Redirigir usando PRG para evitar reenvíos
+         // header("Location: " . $_SERVER['PHP_SELF'] . "#contact");
+         //        exit; 
+         //    } else{
+         //        echo "error al guardar el memsaje.";
+         //    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
