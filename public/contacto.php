@@ -1,7 +1,7 @@
 
 <?php 
 // session_start();
-require '../include/config.php'; // Asegura que la conexión a la DB está cargada
+require '../include/database.php'; // Asegura que la conexión a la DB está cargada
 
 $nombre = filter_var(trim($_POST['nombre'] ?? ''), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
