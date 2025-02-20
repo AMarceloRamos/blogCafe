@@ -16,9 +16,16 @@
 
 
 
-// Preparar la consulta
-$query = "INSERT INTO contacto (nombre, email, mensaje, estado) VALUES (:nombre, :email, :mensaje, 'activo')";
-$stmt = $db->prepare($query);
+        $nombre = filter_var(trim($_POST['nombre'] ?? ''), FILTER_SANITIZE_STRING);
+        $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
+        $mensaje = filter_var(trim($_POST['mensaje'] ?? ''), FILTER_SANITIZE_STRING);
+
+        $errores = [];
+
+        if(empty($errores)){
+            $query =  "INSERT INTO contacto (nombre, email, mensaje, estado) values ('$nombre','$email','$mensaje', 'activo')";
+            $resultado = mysqli_query($db, $query);
+
 
 // Vincular los parámetros
 $stmt->bindParam(':nombre', $nombre);
