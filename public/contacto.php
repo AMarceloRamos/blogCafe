@@ -1,7 +1,5 @@
 
 <?php 
-// session_start();
-<?php 
 require '../include/config.php';
 
 $pdo = conectarDB(); // Obtener la conexión a PostgreSQL
@@ -36,9 +34,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "Todos los campos son obligatorios.";
     }
 }
-?>
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
