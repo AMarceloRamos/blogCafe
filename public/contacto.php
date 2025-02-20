@@ -1,51 +1,43 @@
 
 <?php 
 // session_start();
-require '../include/database.php'; // Asegura que la conexión a la DB está cargada
+<?php 
+require '../include/config.php';
 
+$pdo = conectarDB(); // Obtener la conexión a PostgreSQL
 
-$pdo = conectarDB();
+$nombre = '';
+$email = '';
+$mensaje = '';
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    ob_start(); // Iniciar buffer de salida para evitar problemas con headers
 
-$nombre = filter_var(trim($_POST['nombre'] ?? ''), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-$email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
-$mensaje = filter_var(trim($_POST['mensaje'] ?? ''), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $nombre = filter_var(trim($_POST['nombre'] ?? ''), FILTER_SANITIZE_SPECIAL_CHARS);
+    $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
+    $mensaje = filter_var(trim($_POST['mensaje'] ?? ''), FILTER_SANITIZE_SPECIAL_CHARS);
 
-$errores = [];
-
-if (empty($nombre) || empty($email) || empty($mensaje)) {
-    $errores[] = "Todos los campos son obligatorios.";
-}
-
-if (empty($errores)) {
-    try {
-        // Preparar la consulta con PDO
+    if (!empty($nombre) && !empty($email) && !empty($mensaje)) {
         $query = "INSERT INTO contacto (nombre, email, mensaje, estado) VALUES (:nombre, :email, :mensaje, 'activo')";
         $stmt = $pdo->prepare($query);
 
-        // Ejecutar la consulta con parámetros
-        $resultado = $stmt->execute([
-            ':nombre' => $nombre,
-            ':email'  => $email,
-            ':mensaje' => $mensaje
-        ]);
+        $stmt->bindParam(':nombre', $nombre);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':mensaje', $mensaje);
 
-        if ($resultado) {
-            // Redirigir usando PRG para evitar reenvíos
-            header("Location:".$_SERVER['PHP_SELF']."#contact?success=1");
+        if ($stmt->execute()) {
+            ob_end_clean(); // Limpiar el buffer antes de redirigir
+            header("Location: " . $_SERVER['PHP_SELF'] . "#contact");
             exit;
         } else {
             echo "Error al guardar el mensaje.";
         }
-    } catch (PDOException $e) {
-        echo "Error de base de datos: " . $e->getMessage();
-    }
-} else {
-    // Mostrar errores si existen
-    foreach ($errores as $error) {
-        echo "<p style='color: red;'>$error</p>";
+    } else {
+        echo "Todos los campos son obligatorios.";
     }
 }
+?>
+
 
 ?>
 <!DOCTYPE html>
