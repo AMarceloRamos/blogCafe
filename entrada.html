@@ -74,7 +74,7 @@
                 }
 
                 // ✅ Hacer una petición a la API
-                const response = await fetch(`http://localhost:3002/api/articulos/${articuloId}`);
+             const response = await fetch(`https://apicafeblog.onrender.com/api/articulos/${articuloId}`);
 
                 if (!response.ok) throw new Error("Artículo no encontrado");
                 const data = await response.json();
