@@ -13,9 +13,7 @@
     }
 
     if($_SERVER['REQUEST_METHOD'] === 'POST'){
-
-
-
+        
         $nombre = filter_var(trim($_POST['nombre'] ?? ''), FILTER_SANITIZE_FULL_SPECIAL_CHARS));
         $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
         $mensaje = filter_var(trim($_POST['mensaje'] ?? ''), FILTER_SANITIZE_FULL_SPECIAL_CHARS));
@@ -27,13 +25,13 @@
             $resultado = mysqli_query($db, $query);
 
 
-// Vincular los parámetros
-$stmt->bindParam(':nombre', $nombre);
-$stmt->bindParam(':email', $email);
-$stmt->bindParam(':mensaje', $mensaje);
+                // Vincular los parámetros
+                $stmt->bindParam(':nombre', $nombre);
+                $stmt->bindParam(':email', $email);
+                $stmt->bindParam(':mensaje', $mensaje);
 
-// Ejecutar la consulta
-$stmt->execute();
+            // Ejecutar la consulta
+                $stmt->execute(){
  
                // Redirigir usando PRG para evitar reenvíos
          header("Location: " . $_SERVER['PHP_SELF'] . "#contact");
@@ -42,7 +40,7 @@ $stmt->execute();
                 echo "error al guardar el mensaje.";
             }
     }
-    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
