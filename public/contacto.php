@@ -14,8 +14,7 @@
 
     if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
-   // Conectar con PDO
-$db = new PDO("pgsql:host=$host;dbname=$database", $user, $password);
+
 
 // Preparar la consulta
 $query = "INSERT INTO contacto (nombre, email, mensaje, estado) VALUES (:nombre, :email, :mensaje, 'activo')";
