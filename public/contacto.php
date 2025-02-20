@@ -1,6 +1,6 @@
 
 <?php 
-require '../include/config.php';
+require '../include/database.php';
 
 $pdo = conectarDB(); // Obtener la conexión a PostgreSQL
 
