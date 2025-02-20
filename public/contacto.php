@@ -1,4 +1,3 @@
-
 <?php 
 require '../include/database.php';
 
