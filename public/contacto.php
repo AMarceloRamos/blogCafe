@@ -3,6 +3,10 @@
 // session_start();
 require '../include/database.php'; // Asegura que la conexión a la DB está cargada
 
+
+$pdo = conectarDB();
+
+
 $nombre = filter_var(trim($_POST['nombre'] ?? ''), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
 $mensaje = filter_var(trim($_POST['mensaje'] ?? ''), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
