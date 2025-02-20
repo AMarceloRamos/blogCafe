@@ -35,6 +35,7 @@ $stmt->execute();
          //    } else{
          //        echo "error al guardar el memsaje.";
          //    }
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
