@@ -1,69 +1,48 @@
 
 <?php 
 // session_start();
-require '../include/database.php';
+require '../include/config.php'; // Asegura que la conexión a la DB está cargada
 
-$db = conectarDB();
+$nombre = filter_var(trim($_POST['nombre'] ?? ''), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+$email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
+$mensaje = filter_var(trim($_POST['mensaje'] ?? ''), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
-$nombre = '';
-$email = '';
-$mensaje = '';
+$errores = [];
 
-// Recuperamos el mensaje de éxito si existe la sesión 
-if (isset($_SESSION['mensaje'])) {
-    $mensaje = $_SESSION['mensaje'];
-    unset($_SESSION['mensaje']); // Eliminamos el mensaje para que no se muestre en recargas
+if (empty($nombre) || empty($email) || empty($mensaje)) {
+    $errores[] = "Todos los campos son obligatorios.";
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nombre = filter_var(trim($_POST['nombre'] ?? ''), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
-    $mensaje = filter_var(trim($_POST['mensaje'] ?? ''), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+if (empty($errores)) {
+    try {
+        // Preparar la consulta con PDO
+        $query = "INSERT INTO contacto (nombre, email, mensaje, estado) VALUES (:nombre, :email, :mensaje, 'activo')";
+        $stmt = $pdo->prepare($query);
 
-    $errores = [];
+        // Ejecutar la consulta con parámetros
+        $resultado = $stmt->execute([
+            ':nombre' => $nombre,
+            ':email'  => $email,
+            ':mensaje' => $mensaje
+        ]);
 
-    if (empty($nombre)) {
-        $errores[] = "El nombre es obligatorio.";
-    }
-
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errores[] = "El email no es válido.";
-    }
-
-    if (empty($mensaje)) {
-        $errores[] = "El mensaje no puede estar vacío.";
-    }
-
-    if (empty($errores)) {
-        // Usar sentencias preparadas para evitar SQL Injection
-        $query = "INSERT INTO contacto (nombre, email, mensaje, estado) VALUES (?, ?, ?, 'activo')";
-        $stmt = mysqli_prepare($db, $query);
-
-        if ($stmt) {
-            // Vincular los parámetros
-            mysqli_stmt_bind_param($stmt, "sss", $nombre, $email, $mensaje);
-
-            // Ejecutar la consulta
-            if (mysqli_stmt_execute($stmt)) {
-                // Redirigir usando PRG para evitar reenvíos
-                header("Location: " . $_SERVER['PHP_SELF'] . "#contact");
-                exit;
-            } else {
-                echo "Error al guardar el mensaje.";
-            }
-
-            // Cerrar la consulta preparada
-            mysqli_stmt_close($stmt);
+        if ($resultado) {
+            // Redirigir usando PRG para evitar reenvíos
+            header("Location: " . $_SERVER['PHP_SELF'] . "#contact?success=1");
+            exit;
         } else {
-            echo "Error en la preparación de la consulta.";
+            echo "Error al guardar el mensaje.";
         }
-    } else {
-        // Mostrar errores si existen
-        foreach ($errores as $error) {
-            echo "<p style='color: red;'>$error</p>";
-        }
+    } catch (PDOException $e) {
+        echo "Error de base de datos: " . $e->getMessage();
+    }
+} else {
+    // Mostrar errores si existen
+    foreach ($errores as $error) {
+        echo "<p style='color: red;'>$error</p>";
     }
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
