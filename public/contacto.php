@@ -1,46 +1,69 @@
 <?php 
-    require '../include/database.php';
+<?php 
+session_start();
+require '../include/database.php';
 
-    $nombre= '';
-    $email = '';
-    $mensaje = '';
+$nombre = '';
+$email = '';
+$mensaje = '';
 
-    //Recuperamos el mensaje de éxito si exista al sesión 
+// Recuperamos el mensaje de éxito si existe la sesión 
+if (isset($_SESSION['mensaje'])) {
+    $mensaje = $_SESSION['mensaje'];
+    unset($_SESSION['mensaje']); // Eliminamos el mensaje para que no se muestre en recargas
+}
 
-    if(isset($_SESSION['mensaje'])){
-        $mensaje=$_SESSION['mensaje'];
-        unset($_SESSION['mensaje']); // eliminamos el mensaje para que no se muestra en la recargas 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $nombre = filter_var(trim($_POST['nombre'] ?? ''), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
+    $mensaje = filter_var(trim($_POST['mensaje'] ?? ''), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+    $errores = [];
+
+    if (empty($nombre)) {
+        $errores[] = "El nombre es obligatorio.";
     }
 
-    if($_SERVER['REQUEST_METHOD'] === 'POST'){
-        
-        $nombre = filter_var(trim($_POST['nombre'] ?? ''), FILTER_SANITIZE_FULL_SPECIAL_CHARS));
-        $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
-        $mensaje = filter_var(trim($_POST['mensaje'] ?? ''), FILTER_SANITIZE_FULL_SPECIAL_CHARS));
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errores[] = "El email no es válido.";
+    }
 
-        $errores = [];
+    if (empty($mensaje)) {
+        $errores[] = "El mensaje no puede estar vacío.";
+    }
 
-        if(empty($errores)){
-            $query =  "INSERT INTO contacto (nombre, email, mensaje, estado) values ('$nombre','$email','$mensaje', 'activo')";
-            $resultado = mysqli_query($db, $query);
+    if (empty($errores)) {
+        // Usar sentencias preparadas para evitar SQL Injection
+        $query = "INSERT INTO contacto (nombre, email, mensaje, estado) VALUES (?, ?, ?, 'activo')";
+        $stmt = mysqli_prepare($db, $query);
 
-
-                // Vincular los parámetros
-                $stmt->bindParam(':nombre', $nombre);
-                $stmt->bindParam(':email', $email);
-                $stmt->bindParam(':mensaje', $mensaje);
+        if ($stmt) {
+            // Vincular los parámetros
+            mysqli_stmt_bind_param($stmt, "sss", $nombre, $email, $mensaje);
 
             // Ejecutar la consulta
-                $stmt->execute(){
- 
-               // Redirigir usando PRG para evitar reenvíos
-         header("Location: " . $_SERVER['PHP_SELF'] . "#contact");
-                exit; 
-            } else{
-                echo "error al guardar el mensaje.";
+            if (mysqli_stmt_execute($stmt)) {
+                // Redirigir usando PRG para evitar reenvíos
+                header("Location: " . $_SERVER['PHP_SELF'] . "#contact");
+                exit;
+            } else {
+                echo "Error al guardar el mensaje.";
             }
+
+            // Cerrar la consulta preparada
+            mysqli_stmt_close($stmt);
+        } else {
+            echo "Error en la preparación de la consulta.";
+        }
+    } else {
+        // Mostrar errores si existen
+        foreach ($errores as $error) {
+            echo "<p style='color: red;'>$error</p>";
+        }
     }
 }
+?>
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
