@@ -1,6 +1,6 @@
 
 <?php 
-session_start();
+// session_start();
 require '../include/database.php';
 
 $nombre = '';
@@ -62,8 +62,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
-?>
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
