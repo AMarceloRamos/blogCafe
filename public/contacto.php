@@ -1,5 +1,5 @@
 <?php 
-    require '../include/app.php';
+    require '../include/database.php';
 
     $nombre= '';
     $email = '';
@@ -16,9 +16,9 @@
 
 
 
-        $nombre = filter_var(trim($_POST['nombre'] ?? ''), FILTER_SANITIZE_STRING);
+        $nombre = filter_var(trim($_POST['nombre'] ?? ''), FILTER_SANITIZE_FULL_SPECIAL_CHARS));
         $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
-        $mensaje = filter_var(trim($_POST['mensaje'] ?? ''), FILTER_SANITIZE_STRING);
+        $mensaje = filter_var(trim($_POST['mensaje'] ?? ''), FILTER_SANITIZE_FULL_SPECIAL_CHARS));
 
         $errores = [];
 
