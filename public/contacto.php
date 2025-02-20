@@ -14,25 +14,20 @@
 
     if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
-        $nombre = filter_var(trim($_POST['nombre'] ?? ''), FILTER_SANITIZE_STRING);
-        $email = filter_var(trim($_POST['email'] ?? ''), FILTER_SANITIZE_EMAIL);
-        $mensaje = filter_var(trim($_POST['mensaje'] ?? ''), FILTER_SANITIZE_STRING);
+   // Conectar con PDO
+$db = new PDO("pgsql:host=$host;dbname=$database", $user, $password);
 
-        $errores = [];
+// Preparar la consulta
+$query = "INSERT INTO contacto (nombre, email, mensaje, estado) VALUES (:nombre, :email, :mensaje, 'activo')";
+$stmt = $db->prepare($query);
 
-        if(empty($errores)){
-            $query =  "INSERT INTO contacto (nombre, email, mensaje, estado) values ('$nombre','$email','$mensaje', 'activo')";
-            $resultado = mysqli_query($db, $query);
+// Vincular los parámetros
+$stmt->bindParam(':nombre', $nombre);
+$stmt->bindParam(':email', $email);
+$stmt->bindParam(':mensaje', $mensaje);
 
-            // Bind de valores
-
-            $stmt->bindParam(':nombre', $nombre, PDO::PARAM_STR);
-            $stmt->bindparam(':email', $email, PDO::PARAM_STR);
-            $stmt->bindParam(':mensaje', $mensaje, PDO::PARAM_STR);
-
-            //Ejecutar la consulta
-
-            if($stmt->execute()){
+// Ejecutar la consulta
+$stmt->execute();
  
                // Redirigir usando PRG para evitar reenvíos
          header("Location: " . $_SERVER['PHP_SELF'] . "#contact");
