@@ -1,6 +1,19 @@
 <?php
-echo 'DB_HOST: ' . getenv('DB_HOST') . "<br>";
-echo 'DB_PORT: ' . getenv('DB_PORT') . "<br>";
-echo 'DB_NAME: ' . getenv('DB_NAME') . "<br>";
-echo 'DB_USER: ' . getenv('DB_USER') . "<br>";
-echo 'DB_PASSWORD: ' . getenv('DB_PASSWORD') . "<br>";
+$host = getenv('DB_HOST') ?: 'dpg-cur1vpdds78s7384bkr0-a';
+$port = getenv('DB_PORT') ?: '5432';
+$dbname = getenv('DB_NAME') ?: 'contactodb_i7hi';
+$user = getenv('DB_USER') ?: 'contactodb_i7hi_user';
+$password = getenv('DB_PASSWORD') ?: 'TU_PASSWORD';
+
+$dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
+
+try {
+    $db = new PDO($dsn, $user, $password, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+    ]);
+    echo "✅ Conexión exitosa a PostgreSQL en Render";
+} catch (PDOException $e) {
+    echo "❌ Error de conexión: " . $e->getMessage();
+}
+?>
